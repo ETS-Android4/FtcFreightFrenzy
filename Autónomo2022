@@ -1,0 +1,163 @@
+package org.firstinspires.ftc.teamcode;
+
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.ServoController;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
+
+@Autonomous(name="Autonomo", group="Linear Opmode")
+
+public class Autonomo extends LinearOpMode {
+
+	private ElapsedTime runtime = new ElapsedTime();
+	private DcMotor motordf = null;
+	private DcMotor motordt = null;
+	private DcMotor motoref = null;
+	private DcMotor motoret = null;
+	private DcMotor garra_direita = null;
+	private DcMotor garra_esquerda = null;
+	private Servo tras = null;
+	private DcMotor cirilo1 = null;
+	private DcMotor cirilo2 = null;
+	private ServoController ExpansionHub1_ServoController;
+	private ServoController ControlHub_ServoController;
+	
+
+	@Override
+	public void runOpMode() {
+		telemetry.addData("Status", "Initialized");
+		telemetry.update();
+			
+		motordf = hardwareMap.get(DcMotor.class, "direita_f");
+		motordt = hardwareMap.get(DcMotor.class, "direita_t");
+		motoref = hardwareMap.get(DcMotor.class, "esquerda_f");
+		motoret = hardwareMap.get(DcMotor.class, "esquerda_t");
+		garra_direita = hardwareMap.get(DcMotor .class, "garra_direito" );
+		garra_esquerda = hardwareMap.get(DcMotor .class, "garra_esquerdo" );
+		tras = hardwareMap.get(Servo. class, "tras" );
+		cirilo1 = hardwareMap.get(DcMotor.class, "carrossel_d");
+		cirilo2 = hardwareMap.get(DcMotor.class, "carrossel_e");
+		ExpansionHub1_ServoController = hardwareMap.get(ServoController.class, "Expansion Hub 1");
+		ControlHub_ServoController = hardwareMap.get(ServoController.class, "Control Hub");
+		
+		garra_direita.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+		garra_esquerda.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+		
+		garra_direita.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+		garra_esquerda.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+		
+		garra_direita.setDirection(DcMotorSimple.Direction.REVERSE);
+		
+		waitForStart();
+		
+		if (opModeIsActive()) {
+			ExpansionHub1_ServoController.pwmDisable();
+			ControlHub_ServoController.pwmDisable();
+			tras.scaleRange(0, 0.5);
+			tras.setPosition(0);
+			sleep(1000);
+			
+			motordf.setPower(-1);
+			motordt.setPower(1);
+			motoref.setPower(1);
+			motoret.setPower(-1);
+			sleep(400);
+			motordf.setPower(0);
+			motordt.setPower(0);
+			motoref.setPower(0);
+			motoret.setPower(0);
+			sleep(400);
+			motordf.setPower(0);
+			motordt.setPower(1);
+			motoref.setPower(1);
+			motoret.setPower(0);
+			sleep(600);
+			motordf.setPower(0);
+			motordt.setPower(0);
+			motoref.setPower(0);
+			motoret.setPower(0);
+			sleep(800);
+			motordf.setPower(-1);
+			motordt.setPower(1);
+			motoref.setPower(1);
+			motoret.setPower(-1);
+			sleep(300);
+			motordf.setPower(0);
+			motordt.setPower(0);
+			motoref.setPower(0);
+			motoret.setPower(0);
+			sleep(500);
+				
+		while(garra_direita.getCurrentPosition() > -415){
+			garra_direita.setTargetPosition(-415);
+			garra_esquerda.setTargetPosition(-415);
+				
+			garra_direita.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+			garra_esquerda.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+				
+				
+			garra_direita.setPower(0.7);
+			garra_esquerda.setPower(0.7);
+			}
+			
+		while(garra_direita.getCurrentPosition() < 0){
+			garra_direita.setTargetPosition(0);
+			garra_esquerda.setTargetPosition(0);
+				
+			garra_direita.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+			garra_esquerda.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+				
+				
+			garra_direita.setPower(0.5);
+			garra_esquerda.setPower(0.5);
+			}
+			
+			sleep(1000);
+			motordf.setPower(1);
+			motordt.setPower(-1);
+			motoref.setPower(-1);
+			motoret.setPower(1);
+			sleep(1000);
+			
+			motordf.setPower(0);
+			motordt.setPower(0);
+			motoref.setPower(0);
+			motoret.setPower(0);
+			sleep(800);
+			
+			motordf.setPower(1);
+			motordt.setPower(0);
+			motoref.setPower(0);
+			motoret.setPower(1);
+			sleep(700);
+			motordf.setPower(0.7*1);
+			motordt.setPower(0.7*-1);
+			motoref.setPower(0.7*-1);
+			motoret.setPower(0.7*1);
+			sleep(600);
+			
+			motordf.setPower(0);
+			motordt.setPower(0);
+			motoref.setPower(0);
+			motoret.setPower(0);
+			sleep(800);
+			
+			cirilo2.setPower(0.5*1);
+			sleep(3000);
+			
+			motordf.setPower(-1);
+			motordt.setPower(-1);
+			motoref.setPower(1);
+			motoret.setPower(1);
+			sleep(700);
+			
+		runtime.reset();
+
+		
+}}}
