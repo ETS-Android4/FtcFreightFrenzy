@@ -1,0 +1,221 @@
+package org.firstinspires.ftc.teamcode;
+
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.ServoController;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
+
+@TeleOp(name="Controlada", group="Linear Opmode")
+
+public class Controlada2022 extends LinearOpMode {
+
+	private ElapsedTime runtime = new ElapsedTime();
+	private DcMotor motordf = null;
+	private DcMotor motordt = null;
+	private DcMotor motoref = null;
+	private DcMotor motoret = null;
+	private DcMotor cirilo1 = null;
+	private DcMotor cirilo2 = null;
+	private DcMotor garra_esquerda = null;
+	private DcMotor garra_direita = null;
+	private CRServo frente = null;
+	private Servo tras = null;
+	private ServoController ExpansionHub1_ServoController;
+	private ServoController ControlHub_ServoController;
+	
+	
+	double vertical;
+	double horizontal;
+	double sentindo;
+
+	@Override
+	public void runOpMode() {
+	telemetry.addData("Status", "Initialized");
+		telemetry.update();
+		
+		motordf = hardwareMap.get(DcMotor.class, "direita_f");
+		motordt = hardwareMap.get(DcMotor.class, "direita_t");
+		motoref = hardwareMap.get(DcMotor.class, "esquerda_f");
+		motoret = hardwareMap.get(DcMotor.class, "esquerda_t");
+		garra_direita = hardwareMap.get(DcMotor .class, "garra_direito" );
+		garra_esquerda = hardwareMap.get(DcMotor .class, "garra_esquerdo" );
+		tras = hardwareMap.get(Servo. class, "tras" );
+		cirilo1 = hardwareMap.get(DcMotor.class, "carrossel_d");
+		cirilo2 = hardwareMap.get(DcMotor.class, "carrossel_e");
+		ExpansionHub1_ServoController = hardwareMap.get(ServoController.class, "Expansion Hub 1");
+		ControlHub_ServoController = hardwareMap.get(ServoController.class, "Control Hub");
+		frente = hardwareMap.get(CRServo.class, "frente" );
+		
+		garra_direita.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+		garra_esquerda.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+		
+		garra_direita.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+		garra_esquerda.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+		
+		garra_direita.setDirection(DcMotorSimple.Direction.REVERSE);
+		
+		waitForStart();
+		runtime.reset();
+
+		// run until the end of the match (driver presses STOP)
+		while (opModeIsActive()) {
+			
+			tras.scaleRange(0, 0.35);
+			horizontal = gamepad1.left_stick_y;
+			vertical = -gamepad1.right_stick_x;
+			sentindo = gamepad1.left_stick_x;
+			motordt.setPower((-sentindo + (vertical - horizontal)));
+			motordf.setPower((-sentindo + (vertical + horizontal)));
+			motoret.setPower((sentindo + (vertical + horizontal)));
+			motoref.setPower((sentindo + (vertical - horizontal)));
+			frente.setPower(gamepad2.right_stick_y);
+
+			telemetry.addData("motordf teste", motordf.getCurrentPosition());
+			telemetry.addData("motordt teste", motordt.getCurrentPosition());
+			telemetry.addData("motoref teste", motoref.getCurrentPosition());
+			telemetry.addData("motoret teste", motoret.getCurrentPosition());
+			
+			telemetry.update();
+			if(gamepad1.dpad_down){
+				
+				motordf.setPower(1);
+				motordt.setPower(-1);
+				motoref.setPower(-1);
+				motoret.setPower(1);
+			}
+			else if(gamepad1.dpad_up){
+				motordf.setPower(-1);
+				motordt.setPower(1);
+				motoref.setPower(1);
+				motoret.setPower(-1);
+				
+			}
+			else if(gamepad1.dpad_left){
+				motordf.setPower(-1);
+				motordt.setPower(-1);
+				motoref.setPower(1);
+				motoret.setPower(1);
+				
+			}
+			else if(gamepad1.dpad_right){
+				motordf.setPower(1);
+				motordt.setPower(1);
+				motoref.setPower(-1);
+				motoret.setPower(-1);
+				
+			}
+			if(gamepad1.a){
+				cirilo1.setPower(1);
+				
+			}
+			else if(gamepad1.b){
+				cirilo2.setPower(1);
+			}
+			if(gamepad1.right_bumper){
+				motordf.setPower(0.5 * 1);
+				motordt.setPower(0.5 * 1);
+				motoref.setPower(0.5 * 1);
+				motoret.setPower(0.5 * 1);
+				
+			}
+			else if(gamepad1.left_bumper){
+				motordf.setPower(1);
+				motordt.setPower(1);
+				motoref.setPower(1);
+				motoret.setPower(1);
+				
+			}
+			if(gamepad2.dpad_down){
+				garra_direita.setTargetPosition(0);
+				garra_esquerda.setTargetPosition(0);
+				
+				
+				garra_direita.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+				garra_esquerda.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+				
+				
+				garra_direita.setPower(0.5);
+				garra_esquerda.setPower(0.5);
+				
+				
+				
+			}
+			else if(gamepad2.dpad_left){
+				garra_direita.setTargetPosition(-394);
+				garra_esquerda.setTargetPosition(-394);
+				
+				
+				garra_direita.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+				garra_esquerda.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+				
+				
+				garra_direita.setPower(0.5);
+				garra_esquerda.setPower(0.5);
+				
+			}
+			else if(gamepad2.dpad_up){
+				garra_direita.setTargetPosition(-412);
+				garra_esquerda.setTargetPosition(-412);
+				
+				
+				garra_direita.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+				garra_esquerda.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+				
+				
+				garra_direita.setPower(0.5);
+				garra_esquerda.setPower(0.5);
+				
+				
+			}
+			else if(gamepad2.dpad_right){
+				garra_direita.setTargetPosition(-425);
+				garra_esquerda.setTargetPosition(-425);
+				
+				
+				garra_direita.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+				garra_esquerda.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+				
+				
+				garra_direita.setPower(0.5);
+				garra_esquerda.setPower(0.5);
+				
+				
+			}
+			else if(gamepad2.left_bumper){
+				garra_direita.setTargetPosition(-700);
+				garra_esquerda.setTargetPosition(-700);
+				
+				
+				garra_direita.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+				garra_esquerda.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+				
+				
+				garra_direita.setPower(0.8);
+				garra_esquerda.setPower(0.8);
+				
+			}
+			if(tras.getPosition() > 0 && gamepad2.a){
+				tras.setPosition(0);
+				sleep(1000);
+			}
+			
+			else if(tras.getPosition() < 0.8 && gamepad2.a){
+				tras.setPosition(0.8);
+				sleep(1000);
+				
+			}
+			
+			
+
+			
+			}
+	}
+}
